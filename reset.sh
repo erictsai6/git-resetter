@@ -29,3 +29,7 @@ git reset --hard origin/master
 
 echo " -- Popping uncommitted changes --"
 git stash pop
+
+if [  ! -z $2 ]; then
+    curl -X POST -H 'Content-type: application/json' --data '{\"text\": \"Successfully reset develop and staging branches to latest master\"}' $2  
+fi
