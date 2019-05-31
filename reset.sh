@@ -41,5 +41,5 @@ git checkout master
 git reset --hard origin/master
 
 if [  ! -z $3 ]; then
-    curl -X POST -H 'Content-type: application/json' --data '{"text": "Successfully reset develop and staging branches to latest master"}' $2  
+    curl -X POST -H 'Content-type: application/json' --data '{"text": "Successfully reset develop and staging branches to latest master"}' $3
 fi
