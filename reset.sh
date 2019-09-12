@@ -1,7 +1,6 @@
 #!/bin/bash
-
 if [ -z $1 ]; then
-    echo "The absolute directory path must be passed in for the git repo you wish to reset"
+    echo "The file with all of the repositories that you wish to reset at the end of the sprint.  Each git repo should be on a separate line"
     exit 1
 fi
 
@@ -9,6 +8,10 @@ if [ -z $2 ]; then
     echo "A base timestamp (epoch) must be passed in to calculate the 2 week sprint cycle"
     exit 1
 fi
+
+currdir="$(cd "$(dirname "$0")"; pwd)"
+
+echo "Current directory: $currdir"
 
 one_day_in_seconds=86400
 two_weeks_in_seconds=$(($one_day_in_seconds * 14))
@@ -21,25 +24,44 @@ if [ "$abs_modulo" -gt "$one_day_in_seconds" ]; then
     exit 1
 fi
 
-echo " -- Navigating to " $1 " --"
-cd $1
+git_repos=$currdir/git-repos
 
-git fetch origin
+[ -d $git_repos ] && rm -rf $git_repos
 
-echo " -- Resetting 'develop' branch to latest master --"
-git checkout develop
-git reset --hard origin/master
-git push origin develop --no-verify --force
+echo
+echo "Creating temporary directory: $git_repos"
+mkdir $git_repos
+echo
 
-echo " -- Resetting 'staging' branch to latest master --"
-git checkout staging
-git reset --hard origin/master
-git push origin staging --no-verify --force
+index=0
+while IFS= read -r line; do
+    
+    echo "Cloning: $line"
+    git clone $line $git_repos/repo-$index
+    cd $git_repos/repo-$index    
 
-echo " -- Resetting 'master' branch to latest master --"
-git checkout master
-git reset --hard origin/master
+    echo " -- Resetting 'develop' branch to latest master --"
+    git checkout develop
+    git reset --hard origin/master
+    # git push origin develop --no-verify --force
+
+    echo " -- Resetting 'staging' branch to latest master --"
+    git checkout staging
+    git reset --hard origin/master
+    # git push origin staging --no-verify --force
+
+    cd $currdir
+    index=$((index+1))
+done < $1
+
+echo
+echo "Cleaning directory: $git_repos"
+rm -rf $git_repos
 
 if [  ! -z $3 ]; then
     curl -X POST -H 'Content-type: application/json' --data '{"text": "Successfully reset develop and staging branches to latest master"}' $2  
 fi
+
+echo
+echo "Done"
+echo
