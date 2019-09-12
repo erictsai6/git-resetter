@@ -59,7 +59,7 @@ echo "Cleaning directory: $git_repos"
 rm -rf $git_repos
 
 if [  ! -z $3 ]; then
-    curl -X POST -H 'Content-type: application/json' --data '{"text": "Successfully reset develop and staging branches to latest master"}' $2  
+    curl -X POST -H 'Content-type: application/json' --data '{"text": "Successfully reset develop and staging branches to latest master"}' $3
 fi
 
 echo
