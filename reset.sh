@@ -43,12 +43,12 @@ while IFS= read -r line; do
     echo " -- Resetting 'develop' branch to latest master --"
     git checkout develop
     git reset --hard origin/master
-    # git push origin develop --no-verify --force
+    git push origin develop --no-verify --force
 
     echo " -- Resetting 'staging' branch to latest master --"
     git checkout staging
     git reset --hard origin/master
-    # git push origin staging --no-verify --force
+    git push origin staging --no-verify --force
 
     cd $currdir
     index=$((index+1))
