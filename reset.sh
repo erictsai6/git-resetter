@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 if [ -z $1 ]; then
     echo "The file with all of the repositories that you wish to reset at the end of the sprint.  Each git repo should be on a separate line"
     exit 1
