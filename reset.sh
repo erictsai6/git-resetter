@@ -36,8 +36,9 @@ mkdir $git_repos
 echo
 
 index=0
+repos=""
 while IFS= read -r line; do
-    
+    repos="$repos\n$line"
     echo "Cloning: $line"
     git clone $line $git_repos/repo-$index
     cd $git_repos/repo-$index    
@@ -61,7 +62,7 @@ echo "Cleaning directory: $git_repos"
 rm -rf $git_repos
 
 if [  ! -z $3 ]; then
-    curl -X POST -H 'Content-type: application/json' --data '{"text": "Successfully reset develop and staging branches to latest master"}' $3
+    curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"Successfully reset develop and staging branches to latest master: $repos\"}" $3
 fi
 
 echo
